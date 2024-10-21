@@ -1,0 +1,63 @@
+services:
+  php:
+    build:
+      args:
+        - USER
+        - UID
+        - GID
+      context: ./.docker/php
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    working_dir: /var/www/
+    env_file:
+      - ./.env
+    volumes:
+      - ./:/var/www
+      - ./.docker/php/ini/php.ini-development:/usr/local/etc/php/php.ini
+    networks:
+      - felps-pdi-02-network
+    depends_on:
+      - redis
+      - postgres
+    links:
+      - redis
+      - postgres
+    ports:
+      - "80:80"
+    environment:
+      - PHP_OPCACHE_VALIDATE_TIMESTAMPS=1 # TODO: What am I?
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # TODO: What am I?
+
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    working_dir: /app/database
+    networks:
+      - infovist-network
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.docker/database/backup:/app/database
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - TZ=GMT+3
+      - POSTGRES_USER=felps
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=store
+
+  redis:
+    image: redis:7.4
+    ports:
+      - "6379:6379"
+    networks:
+      - felps-pdi-02-network
+
+volumes:
+  postgres-data:
+
+networks:
+  felps-pdi-02-network:
+    driver: bridge
+    external: true
+    name: felps-pdi-02-network
