@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasTable(self::TABLE)) {
+        if (!Schema::hasTable(self::TABLE)) {
             Schema::create(self::TABLE, function (Blueprint $table) {
                 $table->uuid('id')->unique()->primary()->default(DB::raw('uuid_generate_v4()'));
                 $table->string('name');
