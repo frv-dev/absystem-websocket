@@ -2,10 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Products extends Model
+/**
+ * @property string $id
+ * @property string $name
+ * @property float $price
+ * @property string $created_at
+ * @property string $updated_at
+ * @property string $deleted_at
+ * @property Collection $orders
+ */
+class Product extends Model
 {
     protected $table = 'products';
 
@@ -27,6 +37,6 @@ class Products extends Model
 
     public function orders(): BelongsToMany
     {
-        return $this->belongsToMany(Orders::class, 'order_items', 'product_id', 'order_id');
+        return $this->belongsToMany(Order::class, 'order_items', 'product_id', 'order_id');
     }
 }

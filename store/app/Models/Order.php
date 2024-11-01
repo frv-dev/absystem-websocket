@@ -2,12 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Orders extends Model
+/**
+ * @property string $id
+ * @property float $price
+ * @property string $customer_id
+ * @property string $created_at
+ * @property string $updated_at
+ * @property string $deleted_at
+ * @property Customer $customer
+ * @property Collection $products
+ * @property Collection $payments
+ */
+class Order extends Model
 {
     protected $table = 'orders';
 
@@ -29,16 +41,16 @@ class Orders extends Model
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customers::class, 'customer_id', 'id');
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Products::class, 'order_items', 'order_id', 'product_id');
+        return $this->belongsToMany(Product::class, 'order_items', 'order_id', 'product_id');
     }
 
     public function payments(): HasMany
     {
-        return $this->hasMany(Payments::class, 'order_id', 'id');
+        return $this->hasMany(Payment::class, 'order_id', 'id');
     }
 }

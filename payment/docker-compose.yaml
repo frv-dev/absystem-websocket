@@ -1,0 +1,30 @@
+services:
+  php-payment:
+    build:
+      args:
+        - USER
+        - UID
+        - GID
+      context: ./.docker/php
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+      - ./.docker/php/ini/php.ini-development:/usr/local/etc/php/php.ini
+    networks:
+      - felps-pdi-02-network
+    ports:
+      - "5555:5555"
+    environment:
+      - PHP_OPCACHE_VALIDATE_TIMESTAMPS=1 # TODO: What am I?
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # TODO: What am I?
+
+volumes:
+  postgres-data:
+
+networks:
+  felps-pdi-02-network:
+    external: true
+    name: felps-pdi-02-network

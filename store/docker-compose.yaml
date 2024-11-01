@@ -1,5 +1,5 @@
 services:
-  php:
+  php-store:
     build:
       args:
         - USER
@@ -58,6 +58,5 @@ volumes:
 
 networks:
   felps-pdi-02-network:
-    driver: bridge
     external: true
     name: felps-pdi-02-network
